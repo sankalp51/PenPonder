@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const rootRoutes = require('./routes/rootRoutes');
+const userRoutes = require('./routes/userRoutes');
 const corsOptions = require("./config/corsConfig");
 const errorHandler = require('./middleware/errorHandler');
 const mongoose = require('mongoose');
@@ -17,6 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 connectDb(process.env.DATABASE_URL);
 
 app.use("^/$|/index(.html)?", rootRoutes);
+app.use("/api/users", userRoutes);
 app.all("*", (req, res) => {
     if (req.accepts("html")) {
         res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
