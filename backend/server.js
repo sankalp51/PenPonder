@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const rootRoutes = require('./routes/rootRoutes');
+const authUserRoutes = require("./routes/authUserRoutes");
 const userRoutes = require('./routes/userRoutes');
 const corsOptions = require("./config/corsConfig");
 const errorHandler = require('./middleware/errorHandler');
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 connectDb(process.env.DATABASE_URL);
 
 app.use("^/$|/index(.html)?", rootRoutes);
+app.use("/auth/users", authUserRoutes);
 app.use("/api/users", userRoutes);
 app.all("*", (req, res) => {
     if (req.accepts("html")) {
