@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const rootRoutes = require('./routes/rootRoutes');
 const userRoutes = require('./routes/userRoutes');
 const corsOptions = require("./config/corsConfig");
@@ -12,6 +13,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
