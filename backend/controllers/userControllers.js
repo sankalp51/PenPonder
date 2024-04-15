@@ -16,7 +16,7 @@ const getOneUser = async (req, res) => {
         if (!id) return res.status(400).json({ message: "valid id is required" });
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: "valid id is required" });
 
-        const user = await User.findById(id).lean().exec();
+        const user = await User.findById(id).select("-refreshToken").lean().exec();
         if (!user) return res.status(404).json({ message: "No such user found" });
         res.status(200).json(user);
     } catch (error) {

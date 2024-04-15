@@ -7,6 +7,8 @@ const authUserRoutes = require("./routes/authUserRoutes");
 const userRoutes = require('./routes/userRoutes');
 const corsOptions = require("./config/corsConfig");
 const errorHandler = require('./middleware/errorHandler');
+const verifyJwt = require("./middleware/verifyJwt");
+const refreshTokenRoute = require('./routes/refreshTokenRoute');
 const mongoose = require('mongoose');
 const connectDb = require("./config/db");
 require('dotenv').config();
@@ -21,8 +23,11 @@ app.use(express.static(path.join(__dirname, "public")));
 connectDb(process.env.DATABASE_URL);
 
 app.use("^/$|/index(.html)?", rootRoutes);
+app.use(refreshTokenRoute);
 app.use("/auth/users", authUserRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/users", verifyJwt, userRoutes);
+
+
 app.all("*", (req, res) => {
     if (req.accepts("html")) {
         res.status(404).sendFile(path.join(__dirname, "views", "404.html"));

@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    refreshToken: String,
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Blog"
