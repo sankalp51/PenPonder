@@ -16,7 +16,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    refreshToken: String
+    refreshToken: String,
+    roles: {
+        User: {
+            type: Number,
+            default: 2124
+        },
+        Admin: Number
+    },
+    profilePicture: String,
+    about: String,
+    posts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Blog"
+        }
+    ]
 });
 
 const User = mongoose.model("User", userSchema);

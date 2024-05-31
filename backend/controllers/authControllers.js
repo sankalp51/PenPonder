@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const USER_ROLES = require("../config/user_roles");
 
-const logIn = async (req, res) => {
+const logIn = async (req, res, next) => {
     try {
         const { username, password } = req.body;
         if (!username || !password) return res.status(400).json({ message: "username and password are required" });
@@ -13,10 +14,16 @@ const logIn = async (req, res) => {
         const validPassword = await bcrypt.compare(password, foundUser.password);
         if (!validPassword) return res.status(401).json({ message: "Invalid password" });
 
+        const roles = Object.values(foundUser.roles);
         const accessToken = jwt.sign(
-            { "username": username },
+            {
+                "userInfo": {
+                    "username": username,
+                    "roles": roles
+                }
+            },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "40s" }
+            { expiresIn: "1d" }
         );
 
         const refreshToken = jwt.sign(
@@ -35,18 +42,18 @@ const logIn = async (req, res) => {
                 maxAge: 24 * 60 * 60 * 1000
             }
         );
-        res.status(200).json({ accessToken });
+        res.status(200).json({ accessToken, roles });
 
 
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 }
 
-const signUp = async (req, res) => {
+const signUp = async (req, res, next) => {
     try {
-        const { firstName, lastName, username, password } = req.body;
+        const { firstName, lastName, username, password, role } = req.body;
         if (!username || !password || !firstName || !lastName) return res.status(400).json({ message: "Enter valid details" });
         if (password.length < 8) return res.status(400).json({ message: "length of password must be 8 or more characters" });
 
@@ -54,16 +61,22 @@ const signUp = async (req, res) => {
         if (duplicates) return res.status(409).json({ message: "User already exists" });
 
         const hashPwd = await bcrypt.hash(password, 10);
-        const newUser = new User({ firstName, lastName, username, password: hashPwd });
+        let newUser;
+        if (role === USER_ROLES.Admin) {
+            newUser = new User({ firstName, lastName, username, password: hashPwd, roles: { admin: role } });
+        }
+        else {
+            newUser = new User({ firstName, lastName, username, password: hashPwd });
+        }
         await newUser.save();
         res.status(201).json({ message: "user created successfully" });
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 }
 
-const logOut = async (req, res) => {
+const logOut = async (req, res, next) => {
     try {
         const cookie = req.cookies;
         if (!cookie?.jwt) return res.sendStatus(204);
@@ -78,7 +91,7 @@ const logOut = async (req, res) => {
         res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
         return res.sendStatus(204);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 }
 

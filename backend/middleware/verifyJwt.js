@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 
 const verifyJwt = (req, res, next) => {
     const { authorization } = req.headers;
-    if (!authorization) {
-        return res.status(401).json({ message: "Unauthorized: No token provided" });
+    if (!authorization?.startsWith("Bearer ")) {
+        return res.status(401).json({ message:"No token provided" });
     }
-    
+
     const token = authorization.split(" ")[1];
     jwt.verify(
         token,
@@ -15,9 +15,10 @@ const verifyJwt = (req, res, next) => {
                 if (err.name === 'TokenExpiredError') {
                     return res.status(401).json({ message: "Unauthorized: Token expired" });
                 }
-                return res.status(403).json({ message: "Forbidden: Invalid token" });
+                return res.status(403).json({ message: "Invalid token" });
             }
-            req.user = decoded.username;
+            req.user = decoded.userInfo.username;
+            req.roles = decoded.userInfo.roles;
             next();
         }
     );

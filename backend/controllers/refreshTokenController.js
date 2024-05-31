@@ -8,8 +8,10 @@ const refreshTokenController = async (req, res) => {
 
         const refreshToken = cookie.jwt;
 
-        const user = await User.findOne({ refreshToken }).select("username").lean().exec();
-        if (!user) return res.status(401).json({ message: "unauthorized" });
+        const user = await User.findOne({ refreshToken }).lean().exec();
+        if (!user) return res.status(403).json({ message: "unauthorized" });
+
+        const roles = Object.values(user.roles);
 
         jwt.verify(
             refreshToken,
@@ -19,9 +21,14 @@ const refreshTokenController = async (req, res) => {
                     return res.status(403).json({ message: "forbidden" });
                 }
                 const accessToken = jwt.sign(
-                    { "username": decoded.username },
+                    {
+                        "userInfo": {
+                            "username": decoded.username,
+                            "roles": roles
+                        }
+                    },
                     process.env.ACCESS_TOKEN_SECRET,
-                    { expiresIn: "40s" }
+                    { expiresIn: "1d" }
                 );
                 res.status(200).json({ accessToken });
             }

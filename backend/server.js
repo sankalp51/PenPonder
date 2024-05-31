@@ -10,6 +10,8 @@ const refreshTokenRoute = require("./routes/auth/refreshTokenRoute");
 const connectDb = require('./config/db');
 const path = require('path');
 const { default: mongoose } = require('mongoose');
+const verifyRoles = require('./middleware/verifyRoles');
+const USER_ROLES = require('./config/user_roles');
 require('dotenv').config();
 
 const app = express();
