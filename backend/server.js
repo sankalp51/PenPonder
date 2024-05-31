@@ -23,6 +23,7 @@ connectDb(process.env.DATABASE_URL);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use('/uploads', express.static(path.join(__dirname, "/uploads")))
 app.use(credentials);
 app.use(cors(require("./config/corsConfig")));
 app.use(cookieParser());

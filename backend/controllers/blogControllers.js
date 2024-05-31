@@ -1,6 +1,4 @@
 const Blog = require('../models/Blog');
-const storage = require('../config/multerConfig');
-const multer = require('multer');
 
 const getAllBlogs = async (req, res, next) => {
     try {
@@ -50,11 +48,21 @@ const getOneBlog = async (req, res, next) => {
 const createBlog = async (req, res, next) => {
     try {
         const { title, content, picture, author } = req.body;
+        const file = req.file ? req.file.path : null;
+
         if (!title || !content || !author) {
             return res.status(400).json({ message: "Invalid blog data" });
         }
 
+        const newBlog = new Blog({
+            title,
+            content,
+            author,
+            picture
+        });
 
+        await newBlog.save();
+        res.status(201).json(newBlog);
 
     } catch (error) {
         next(error);
