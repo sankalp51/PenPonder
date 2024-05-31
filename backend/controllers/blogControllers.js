@@ -47,8 +47,8 @@ const getOneBlog = async (req, res, next) => {
 
 const createBlog = async (req, res, next) => {
     try {
-        const { title, content, picture, author } = req.body;
-        const file = req.file ? req.file.path : null;
+        const { title, content, author } = req.body;
+        const picture = req.file ? req.file.path : null;
 
         if (!title || !content || !author) {
             return res.status(400).json({ message: "Invalid blog data" });
