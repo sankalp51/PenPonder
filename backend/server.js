@@ -7,6 +7,7 @@ const rootRoutes = require('./routes/rootRoutes');
 const userAuthRoutes = require('./routes/auth/authRoutes');
 const verifyJwt = require('./middleware/verifyJwt');
 const refreshTokenRoute = require("./routes/auth/refreshTokenRoute");
+const blogApiRoutes = require('./routes/api/blogRoutes');
 const connectDb = require('./config/db');
 const path = require('path');
 const { default: mongoose } = require('mongoose');
@@ -32,11 +33,14 @@ const PORT = process.env.PORT || 3000;
 //root
 app.use("^/$|^index(.html)?", rootRoutes);
 
+//user auth routes
+app.use("/users/auth", userAuthRoutes);
+
 //refresh token route
 app.use("/refresh", refreshTokenRoute);
 
-//user auth routes
-app.use("/users/auth", userAuthRoutes);
+//blog api routes
+app.use("/api/posts", verifyJwt, verifyRoles(USER_ROLES.Admin, USER_ROLES.user), blogApiRoutes);
 
 //error handler
 app.use(errorHandler);

@@ -63,7 +63,7 @@ const signUp = async (req, res, next) => {
         const hashPwd = await bcrypt.hash(password, 10);
         let newUser;
         if (role === USER_ROLES.Admin) {
-            newUser = new User({ firstName, lastName, username, password: hashPwd, roles: { admin: role } });
+            newUser = new User({ firstName, lastName, username, password: hashPwd, roles: { Admin: role } });
         }
         else {
             newUser = new User({ firstName, lastName, username, password: hashPwd });
