@@ -17,13 +17,90 @@ import { Label } from "@/components/ui/label"
 export default function Register() {
     const [showPwd, setShowPwd] = useState(false);
     const [showConfirmPwd, setShowConfirmPwd] = useState(false);
-    const [confirmPasswordEquals, setConfirmPasswordEquals] = useState({
+    const [inputValues, setInputValues] = useState({
+        firstName: "",
+        lastName: "",
+        username: "",
         password: "",
         confirmPassword: ""
     });
 
+    const [passwordError, setPasswordError] = useState({
+        isError: false,
+        message: ""
+    });
+
+    const [firstNameError, setFirstNameError] = useState({
+        isError: false,
+        message: ""
+    });
+
+    const [lastNameError, setLastNameError] = useState({
+        isError: false,
+        message: ""
+    });
+
+    const [usernameError, setUsernameError] = useState({
+        isError: false,
+        message: ""
+    })
+
+    const handleSubmit = () => {
+        if (!inputValues.firstName.length) {
+            setFirstNameError(prevState => {
+                return {
+                    ...prevState,
+                    isError: true,
+                    message: "Required"
+                }
+            });
+        }
+        else if (!inputValues.lastName.length) {
+            setLastNameError(prevState => {
+                return {
+                    ...prevState,
+                    isError: true,
+                    message: "Required"
+                }
+            });
+        }
+        else if (!inputValues.username.length) {
+            setUsernameError(prevState => {
+                return {
+                    ...prevState,
+                    isError: true,
+                    message: "username is required"
+                }
+            });
+        }
+        else if (inputValues.password.trim() !== inputValues.confirmPassword.trim()) {
+            setPasswordError(prevState => {
+                return {
+                    ...prevState,
+                    isError: true,
+                    message: "Password does not match"
+                }
+            });
+        }
+        else if (!inputValues.password.length || !inputValues.confirmPassword.length) {
+            setPasswordError(prevState => {
+                return {
+                    ...prevState,
+                    isError: true,
+                    message: "password and confirm password is required"
+                }
+            });
+        }
+
+    }
+
     const togglePwdVisibility = () => setShowPwd(prevState => !prevState);
     const toggleConfirmPwdVisibility = () => setShowConfirmPwd(prevState => !prevState);
+
+    const errorStyles = {
+        backgroundColor: "#ff7f7f",
+        border: "2px solid red"
+    }
 
     return (
         <Card className="mx-auto max-w-sm">
@@ -38,21 +115,42 @@ export default function Register() {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="first-name">First name</Label>
-                            <Input id="first-name" placeholder="Max" required />
+                            <Input
+                                id="first-name"
+                                placeholder="Max"
+                                style={firstNameError.isError ? errorStyles : undefined}
+                                onFocus={() => setFirstNameError(prevState => ({ ...prevState, isError: false, message: "" }))}
+                                onChange={e => setInputValues(prevState => { return { ...prevState, firstName: e.target.value } })}
+                                required
+                            />
+
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="last-name">Last name</Label>
-                            <Input id="last-name" placeholder="Robinson" required />
+                            <Input
+                                id="last-name"
+                                placeholder="Robinson"
+                                required
+                                style={lastNameError.isError ? errorStyles : undefined}
+                                onFocus={() => setLastNameError(prevState => ({ ...prevState, isError: false, message: "" }))}
+                                onChange={e => setInputValues(prevState => { return { ...prevState, lastName: e.target.value } })}
+                            />
+
                         </div>
                     </div>
+                    {lastNameError.isError && <p style={{ textAlign: "left", color: "red", fontWeight: "bolder" }}>{lastNameError.message}</p>}
+                    {firstNameError.isError && <p style={{ textAlign: "left", color: "red", fontWeight: "bolder" }}>{firstNameError.message}</p>}
                     <div className="grid gap-2">
                         <Label htmlFor="username">Username</Label>
                         <Input
                             id="username"
                             type="text"
                             placeholder="Enter your username"
-                            required
+                            style={usernameError.isError ? errorStyles : undefined}
+                            onFocus={() => setUsernameError(prevState => ({ ...prevState, isError: false, message: "" }))}
+                            onChange={e => setInputValues(prevState => { return { ...prevState, username: e.target.value } })}
                         />
+                        {usernameError.isError && <p style={{ textAlign: "left", color: "red", fontWeight: "bolder" }}>{usernameError.message}</p>}
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
@@ -62,7 +160,9 @@ export default function Register() {
                                 type={showPwd ? "text" : "password"}
                                 placeholder="Password"
                                 autoComplete="off"
-                                required
+                                style={passwordError.isError ? errorStyles : undefined}
+                                onFocus={() => setPasswordError(prevState => { return { ...prevState, isError: false, message: "" } })}
+                                onChange={e => setInputValues(prevState => { return { ...prevState, password: e.target.value } })}
                             />
                             <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={togglePwdVisibility}>
                                 {!showPwd ? <VisibilityOffIcon /> : <VisibilityIcon />}
@@ -76,15 +176,18 @@ export default function Register() {
                                 id="password-confirm"
                                 type={showConfirmPwd ? "text" : "password"}
                                 placeholder="Confirm Password"
-                                required
                                 autoComplete="off"
+                                style={passwordError.isError ? errorStyles : undefined}
+                                onFocus={() => setPasswordError(prevState => { return { ...prevState, isError: false, message: "" } })}
+                                onChange={e => setInputValues(prevState => { return { ...prevState, confirmPassword: e.target.value } })}
                             />
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={toggleConfirmPwdVisibility}>
+                            {passwordError.isError && <p style={{ textAlign: "left", color: "red", fontWeight: "bolder" }}>{passwordError.message}</p>}
+                            <div className={`absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer ${passwordError.isError && "bottom-6"}`} onClick={toggleConfirmPwdVisibility}>
                                 {!showConfirmPwd ? <VisibilityOffIcon /> : <VisibilityIcon />}
                             </div>
                         </div>
                     </div>
-                    <Button type="submit" className="w-full">
+                    <Button type="submit" className="w-full" onClick={handleSubmit}>
                         Create an account
                     </Button>
                 </div>

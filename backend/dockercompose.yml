@@ -1,0 +1,31 @@
+services:
+  api:
+    image: node:18
+    container_name: node_api
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=sankalp
+      - MONGO_INITDB_ROOT_PASSWORD=mypassword
+
+volumes:
+  mongo-data:
+    driver: local
