@@ -1,6 +1,6 @@
 # Blog REST API
 
-This is a backend server for a blog application built using the MERN stack. It allows users to create posts, like posts, and comment on posts.
+This is a backend server for a pen ponder application built using the MERN stack. It allows users to create posts, like posts, and comment on posts.
 
 ## Getting Started
 
