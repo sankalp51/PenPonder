@@ -1,7 +1,8 @@
 import { RouterProvider } from 'react-router-dom'
 import router from './routes/Routes'
 import { Toaster } from 'sonner'
-function App() {
+
+export default function App() {
 
   return (
     <main>
@@ -11,4 +12,3 @@ function App() {
   )
 }
 
-export default App
