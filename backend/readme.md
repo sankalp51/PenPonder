@@ -95,7 +95,7 @@ If a route is not found, a 404 error will be returned:
 
 ## Author
 
-- **Your Name** - *Initial work* - [Your GitHub](https://github.com/your-username)
+- **Sankalp Kalangutkar** - *Initial work* - [GitHub](https://github.com/sankalp51)
 
 ## License
 
