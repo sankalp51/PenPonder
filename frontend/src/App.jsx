@@ -7,7 +7,7 @@ export default function App() {
   return (
     <main>
       <RouterProvider router={router} />
-      <Toaster />
+      <Toaster richColors/>
     </main>
   )
 }

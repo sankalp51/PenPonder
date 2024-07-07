@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend REST API for penPonder blogging platform",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon"
@@ -19,7 +19,6 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.2",
     "multer": "^1.4.5-lts.1",
-    "sharp": "^0.33.4",
     "uuid": "^9.0.1"
   }
 }

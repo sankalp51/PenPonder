@@ -42,7 +42,8 @@ const logIn = async (req, res, next) => {
                 maxAge: 24 * 60 * 60 * 1000
             }
         );
-        res.status(200).json({ accessToken, roles });
+        const user = foundUser.username;
+        res.status(200).json({ accessToken, roles, user });
 
 
 
