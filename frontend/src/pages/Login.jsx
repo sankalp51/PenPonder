@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginForm() {
-    const { auth } = useAuth();
+    const { setAuth } = useAuth();
     const navigate = useNavigate();
     const [showPwd, setShowPwd] = useState(false);
     const [credentials, setCredentials] = useState({
